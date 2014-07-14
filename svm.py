@@ -7,6 +7,8 @@ Packages: cvxopt as quadratic solver & numpy as general bringer of joy & mathema
 import numpy
 import cvxopt.solvers
 
+
+#Trains an SVM
 class train(object):
     #Class constructor: kernel function & data
     def __init__(self, kernel, c):
@@ -19,7 +21,7 @@ class train(object):
         lagrangeMultipliers = self.multipliers(X, y)
         return self.predictor(X, y, lagrangeMultipliers)
         
-    #return SVM prediction
+    #returns SVM prediction
     def predictor(self, X, y, lagrangeMultipliers):
         svindices = lagrangeMultipliers > 1e-5
         
@@ -64,25 +66,26 @@ class train(object):
             h_2 = cvxopt.matrix(numpy.ones(n_samples) * self._c)
             
             G = cvxopt.matrix(numpy.vstack(G_1, G_2))
-            h = cvxopt.matrix(numpy.vstack(h_1, h_2)
+            h = cvxopt.matrix(numpy.vstack(h_1, h_2))
             
         soln = cvxopt.solvers.qp(P, q, G, h, A, b)
         
         return numpy.ravel(soln['x'])
-        
-    class predict(object):
-        def __init__(self, kernel, bias, weights, sv, svlabels):
-            self._kernel = kernel
-            self._bias = bias
-            self._weights = weights
-            self._sv = sv
-            self._svlabels = svlabels
+
+#SVM prediction        
+class predict(object):
+    #Class constructor
+    def __init__(self, kernel, bias, weights, sv, svlabels):
+        self._kernel = kernel
+        self._bias = bias
+        self._weights = weights
+        self._sv = sv
+        self._svlabels = svlabels
+    
+    #Returns SVM predicton given feature vector
+    def predict(self, x):
+        result = self._bias
+        for z_i, x_i, y_i in zip(self._weights, self._sv, self._svlabels):
+            result += z_i * y_i * self._kernel(x_i, x)
             
-        def predict(self, x):
-            result = self._bias
-            for z_i, x_i, y_i in zip(self._weights, self._sv, self._svlabels):
-                result += z_i * y_i * self._kernel(x_i, x)
-                
-            return numpy.sign(result).item()
-            
-        n_samples, n_features = X.shape
+        return numpy.sign(result).item()
