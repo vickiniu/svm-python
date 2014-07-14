@@ -30,11 +30,11 @@ class kernel(object):
         
     @staticmethod
     def inhomogenous_polynomial(dim, offset):
-        return Kernel.polynomial(dim = dim, offset = 1.0)
+        return kernel.polynomial(dim = dim, offset = 1.0)
         
     @staticmethod
     def homogenous_polynomial(dim, offset):
-        return Kernel.polynomial(dim = dim, offset = 0.0)
+        return kernel.polynomial(dim = dim, offset = 0.0)
 
     @staticmethod
     def tanh(kappa, c):
